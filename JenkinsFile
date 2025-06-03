@@ -4,33 +4,49 @@ pipeline {
   stages {
     stage('Checkout') {
       steps {
-        git branch: 'main', url: 'https://github.com/elviacorrea/8.2CDevSecOp.git'
+        git branch: 'main', url: 'https://github.com/elviacorrea/SIT753_8.1C.git'
       }
     }
 
-    stage('Install Dependencies') {
+    stage('Build') {
       steps {
-        timeout(time: 20, unit: 'MINUTES') {
-          sh '/bin/bash -c "npm install --no-audit --legacy-peer-deps --prefer-offline --no-fund --progress=false"'
-        }
+        echo 'Stage 1: Building with Maven'
       }
     }
 
-    stage('Run Tests') {
+    stage('Test') {
       steps {
-        sh '/bin/bash -c "npm test || true"'
+        echo 'Stage 2: Running unit and integration tests'
       }
     }
 
-    stage('Generate Coverage Report') {
+    stage('Code Analysis') {
       steps {
-        sh '/bin/bash -c "npm run coverage || true"'
+        echo 'Stage 3: Static code analysis using SonarQube'
       }
     }
 
-    stage('NPM Audit (Security Scan)') {
+    stage('Security Scan') {
       steps {
-        sh '/bin/bash -c "npm audit || true"'
+        echo 'Stage 4: Scanning with Snyk'
+      }
+    }
+
+    stage('Deploy to Staging') {
+      steps {
+        echo 'Stage 5: Deploying to staging server'
+      }
+    }
+
+    stage('Integration Testing on Staging') {
+      steps {
+        echo 'Stage 6: Running integration tests on staging'
+      }
+    }
+
+    stage('Deploy to Production') {
+      steps {
+        echo 'Stage 7: Final production deployment'
       }
     }
   }
