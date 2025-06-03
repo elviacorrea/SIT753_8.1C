@@ -1,0 +1,37 @@
+pipeline {
+  agent any
+
+  stages {
+    stage('Checkout') {
+      steps {
+        git branch: 'main', url: 'https://github.com/elviacorrea/8.2CDevSecOp.git'
+      }
+    }
+
+    stage('Install Dependencies') {
+      steps {
+        timeout(time: 20, unit: 'MINUTES') {
+          sh '/bin/bash -c "npm install --no-audit --legacy-peer-deps --prefer-offline --no-fund --progress=false"'
+        }
+      }
+    }
+
+    stage('Run Tests') {
+      steps {
+        sh '/bin/bash -c "npm test || true"'
+      }
+    }
+
+    stage('Generate Coverage Report') {
+      steps {
+        sh '/bin/bash -c "npm run coverage || true"'
+      }
+    }
+
+    stage('NPM Audit (Security Scan)') {
+      steps {
+        sh '/bin/bash -c "npm audit || true"'
+      }
+    }
+  }
+}
